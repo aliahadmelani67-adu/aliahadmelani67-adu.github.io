@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smile & Relax</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #cfe9f5, #e6f7e9);
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      color: #2f6f6b;
+      font-weight: 500;
+      margin-bottom: 30px;
+    }
+
+    .smiley {
+      width: 160px;
+      height: 160px;
+      background: #ffd966;
+      border-radius: 50%;
+      position: relative;
+      cursor: pointer;
+      animation: breathe 4s ease-in-out infinite;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .eye {
+      width: 16px;
+      height: 16px;
+      background: #333;
+      border-radius: 50%;
+      position: absolute;
+      top: 50px;
+    }
+
+    .eye.left { left: 45px; }
+    .eye.right { right: 45px; }
+
+    .mouth {
+      width: 80px;
+      height: 40px;
+      border-bottom: 6px solid #333;
+      border-radius: 0 0 80px 80px;
+      position: absolute;
+      bottom: 45px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    p {
+      margin-top: 20px;
+      color: #3a6f68;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Click the smile 😊</h1>
+
+    <div class="smiley" onclick="playPeacefulSound()">
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+      <div class="mouth"></div>
+    </div>
+
+    <p>Take a deep breath… you’re safe here 🌱</p>
+  </div>
+
+  <script>
+    let audioContext;
+
+    function playPeacefulSound() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.value = 432;
+
+      gainNode.gain.setValueAtTime(0.0001, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.3, audioContext.currentTime + 1);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 4);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 4);
+    }
+  </script>
+</body>
+</html>
